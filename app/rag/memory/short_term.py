@@ -45,7 +45,7 @@ class ShortTermMemory:   #MEMORY A BREVE TERMINE W REDIS CACHE
     async def get_all(self) -> list[ChatMessage]:
         """Ritorna tutti i messaggi della sessione corrente."""
         raw = await self.redis.get_session(self.conversation_id)
-        return [ ChatMessage(role=m["role"], content=m["content"]) for m in ra ]
+        return [ ChatMessage(role=m["role"], content=m["content"]) for m in raw ]
 
     async def get_formatted(self) -> str:
         """Formatta la storia per includerla nel prompt."""

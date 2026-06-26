@@ -41,6 +41,7 @@ class AppSettings(BaseSettings):
 
     app_name: str = "RAG Enterprise Compet-e Legal"  #here il value è quello di default, se in .env esiste allora vince quello di .env !!
     app_version: str = "0.1.0"
+    app_description: str = "RAG Enterprise per documenti legali"
     app_debug: bool = False
     app_environment: Literal["development", "staging", "production"] = "development"
 
