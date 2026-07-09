@@ -1,4 +1,6 @@
 version: "3.8"  #versione sintassi Docker Compose, now (26-05-2026) 3.8 è la più comune e stabile, supporta tutte le funzionalità necessarie
+name: ${COMPOSE_PROJECT_NAME}  #nome prj! (se non lo specifici qua allora si setta come nome folder che contiene questo docker-compose file) quindi ora e.g.i nomi dei containers saranno <project_name>-<service_name>-<index>
+
 services:    #here servizi da avviare
 
 
@@ -6,7 +8,7 @@ services:    #here servizi da avviare
     build:  #build ur img custom da Dockerfile, questo è necessario per installare dipendenze e configurare ambiente esatto per FastAPI
       context: .   #la root progetto è il contesto build
       dockerfile: docker/fastapi.Dockerfile
-    container_name: fastapi
+    #container_name: fastapi  !non specificare il nome, xk tu hai 1 solo server quindi ci sarebbe conflitto nome container e.g.fastapi di dev env -- fastapi staging env. senza sepcificare docker crea automaticamente e.g. <project_name>-<service_name>-<index> cioe <nome_prj>-fastapi-1
     restart: unless-stopped  #🔥riavvia se crasha, ma non in caso di stop manuale, ottimo per produzione
     ports:
       - "8000:8000"  #mapping HOST:CONTAINER, quindi porta localhost:8000 va al container porta 8000
@@ -27,7 +29,7 @@ services:    #here servizi da avviare
         condition: service_started
     volumes:
       - ./config:/app/config:ro    #monta cartella config del progetto dentro container, in sola lettura (ro), così config è centralizzata e modificabile senza rebuild container!!
-      - uploads_data:/app/uploads  #🔥 volume persistente per i PDF caricati dagli utenti
+      - ${DATA_ROOT}/uploads:/app/uploads #uploads_data:/app/uploads  #🔥 volume persistente per i PDF caricati dagli utenti
     healthcheck:  #check salute del container
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]   #chiama endpoint health, f → fail se status != 200
       interval: 30s  #ogni 30sec
@@ -40,7 +42,7 @@ services:    #here servizi da avviare
     build:
       context: .
       dockerfile: docker/celery.Dockerfile
-    container_name: celery-worker-high
+    #container_name: celery-worker-high
     restart: unless-stopped
     command: >
       celery -A app.workers.celery_app.celery_app worker
@@ -61,7 +63,7 @@ services:    #here servizi da avviare
       SQLSERVER_HOST: "sqlserver"
       QDRANT_URL: "http://qdrant:6333"
     volumes:
-      - uploads_data:/app/uploads  #🔥 necessario per reprocess_document che legge i file già caricati
+      - ${DATA_ROOT}/uploads:/app/uploads   #uploads_data:/app/uploads  #🔥 necessario per reprocess_document che legge i file già caricati
     depends_on:  #partira solo dopo questi VENGONO AVVIATI, in questo esatto ordine ( 🔥cio pero non significa che sono pronti ready e operativi)
       sqlserver:
         condition: service_healthy
@@ -80,7 +82,7 @@ services:    #here servizi da avviare
     build:
       context: .
       dockerfile: docker/celery.Dockerfile
-    container_name: celery-worker-default
+    #container_name: celery-worker-default
     restart: unless-stopped
     command: >
       celery -A app.workers.celery_app.celery_app worker
@@ -98,7 +100,7 @@ services:    #here servizi da avviare
       SQLSERVER_HOST: "sqlserver"
       QDRANT_URL: "http://qdrant:6333"
     volumes:
-      - uploads_data:/app/uploads    #🔥CRITICO: legge i PDF da qui durante la pipeline di ingestion
+      - ${DATA_ROOT}/uploads:/app/uploads   #uploads_data:/app/uploads    #🔥CRITICO: legge i PDF da qui durante la pipeline di ingestion
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -110,7 +112,7 @@ services:    #here servizi da avviare
     build:
       context: .
       dockerfile: docker/celery.Dockerfile
-    container_name: celery-beat
+    #container_name: celery-beat
     restart: unless-stopped
     command: >
       celery -A app.workers.celery_app.celery_app beat
@@ -126,7 +128,7 @@ services:    #here servizi da avviare
   #FLOWER x monitoring Celery (dev/staging), si collega a Redis e mostra cosa sta succedendo nel sistema Celery tramite un'interfaccia web
   flower:  #📊 dashboard monitoring Celery
     image: mher/flower:2.0  #immagine ufficiale Flower, leggera e pronta all'uso, supporta autenticazione, ottima per monitorare health e performance dei worker Celery in dev e staging (in prod meglio soluzioni più robuste come Prometheus + Grafana)
-    container_name: flower
+    #container_name: flower
     restart: unless-stopped
     command: >
       celery
@@ -147,7 +149,7 @@ services:    #here servizi da avviare
     build:
       context: .                          #root del progetto come contesto build
       dockerfile: docker/chainlit.Dockerfile
-    container_name: chainlit
+    #container_name: chainlit
     restart: unless-stopped
     ports:
       - "8080:8080"                       #UI esposta su localhost:8080
@@ -168,13 +170,13 @@ services:    #here servizi da avviare
   #QDRANT
   qdrant:
     image: qdrant/qdrant:v1.4.2     #immagine ufficiale Qdrant
-    container_name: qdrant
+    #container_name: qdrant
     restart: unless-stopped
     ports:
       - "6333:6333"   #HTTP / REST
       - "6334:6334"   #gRPC
     volumes:
-      - qdrant_data:/qdrant/storage   #persistenza dati Qdrant, SENZA QUESTO PERDI EMBEDDINGS AL RESTART!! così i dati restano anche se il container viene ricreato, importante per produzione!!
+      - ${DATA_ROOT}/qdrant:/qdrant/storage   #qdrant_data:/qdrant/storage   #persistenza dati Qdrant, SENZA QUESTO PERDI EMBEDDINGS AL RESTART!! così i dati restano anche se il container viene ricreato, importante per produzione!!
     environment:   #env var AGGIUNTIVE, se ci sono anche in .env QUESTE SOVRASCRIVONO quelle in .env, utili per configurazioni specifiche container
       QDRANT__SERVICE__HTTP_PORT: 6333
       QDRANT__SERVICE__GRPC_PORT: 6334
@@ -190,12 +192,12 @@ services:    #here servizi da avviare
   #REDIS broker Celery + cache + sessioni
   redis:
     image: redis:7.0-alpine  #immagine ufficiale Redis, versione 7.0, basata su Alpine Linux (leggera), perfetta per produzione, supporta configurazione personalizzata tramite command e env var
-    container_name: redis
+    #container_name: redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data   #persistenza dati Redis, così i dati restano anche se il container viene ricreato, importante per produzione!!
+      - ${DATA_ROOT}/redis:/data   #redis_data:/data   #persistenza dati Redis, così i dati restano anche se il container viene ricreato, importante per produzione!!
     command: >
       redis-server
       --maxmemory 2gb
@@ -219,12 +221,12 @@ services:    #here servizi da avviare
   #SQL SERVER storage relazionale multi-tenant
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest  #immagine ufficiale SQL Server 2022, sempre aggiornata, supporta configurazione tramite env var e script di inizializzazione, ottima per produzione (⚠️ricorda di configurare password forte e persistena dati!!)
-    container_name: sqlserver
+    #container_name: sqlserver
     restart: unless-stopped
     ports:
       - "1433:1433"
     volumes:
-      - sqlserver_data:/var/opt/mssql
+      - ${DATA_ROOT}/sqlserver:/var/opt/mssql   #sqlserver_data:/var/opt/mssql
       - ./docker/sqlserver/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - ./docker/sqlserver/entrypoint.sh:/init/entrypoint.sh:ro
     #sqlserver_data:/var/opt/mssql  persistena dati SQL Server, così i dati restano anche se il container viene ricreato, importante per produzione!!
@@ -268,4 +270,10 @@ volumes:  #docker named values, qui definiamo i volumi usati dai container per l
   uploads_data:
     driver: local  #🔥 PDF e documenti caricati dagli utenti — condiviso tra fastapi e celery workers
 #i volumes sono area persistente ESTERNA AL CONTAINER, su linux solitamente in /var/lib/docker/volumes/, su Windows Docker Desktop solitamente C:\Users\Username\AppData\Local\docker\volumes. LI GESTISCE DOCKER
+
+networks:
+  rag-network:
+    name: ${DOCKER_NETWORK}
+    driver: bridge
+
 
