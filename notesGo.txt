@@ -49,7 +49,7 @@ e.g. è per questo che hai fatto in .env SQLSERVER_HOST=sqlserver, xk sqlserver 
 //tutto cio dentro il docker-compose.yml E' UN UNICO DOCKER COMPOSE STACK (rete docker interna privata in cui i containers si parlano) !!al suo esterno si vedranno solo le :ports esposte dichiarate.
 
 DEPLOY SU SERVER:
-su server devi aver installato: Docker Engine, Docker Compose, e magari anche 🔥Nginx(reverse proxy che gestisce SSL/HTTPS e il dominio)(nginx deve stare davanti fastapi, ascolta su porta 443 HTTPS gira le req internamente a fastapi su porta 8000)(nginx lo installi sul server target, oppure direttamente come container all'interno di questo docker-compose cioe questo DOCKER COMPOSE STACK)
+su server devi aver installato: Docker Engine, Docker Compose docker cli, e magari anche 🔥Nginx(ma intanto tu non vai sul web, reverse proxy che gestisce SSL/HTTPS e il dominio)(nginx deve stare davanti fastapi, ascolta su porta 443 HTTPS gira le req internamente a fastapi su porta 8000)(nginx lo installi sul server target, oppure direttamente come container all'interno di questo docker-compose cioe questo DOCKER COMPOSE STACK)
 //su server non installi nient'altro, tutto python le librerie i driver ODBC ect 🔥VIVONO DENTRO LE IMG DOCKER!!
 
 e.g. nginx
@@ -76,6 +76,7 @@ Nginx lo carichi gia direttamente sul server se hai e.g. 20apps(docker-compose) 
 1.-copia il prj sul server  e.g. git clone <https:\\repo>   //quando fai push puoi caricare code su github o 🔥GitLab(self-hosted dell'azienda) .al posto di git si potrebbe anche usare SCP (ma è davvero poco usato xk non ha cronologia e rollercback queste cose temporarali)
 2.-entra nel server tramite ssh  e.g. ssh user@server e poi cd /app/project
 3.-crea file .env e.g.'nano .env'
+//installa docker on server 
 4.-avvia il tutto con docker e.g.'docker compose up -d --build' //-d è detach cioe in background, --build rebuild images
 5.-una volta tutto avviato e pronto, testa i servizi accendendoci e.g.ChainLit -> http://SERVER_IP:8080
 8000 FastAPI
@@ -84,7 +85,7 @@ Nginx lo carichi gia direttamente sul server se hai e.g. 20apps(docker-compose) 
 6379 Redis
 1433 SQL Server
 6333 Qdrant
-6.-sul server per il firewall fai se che apra le tue porte che esponi solo se è necessario!
+6.-sul server per il firewall fai se che apra le tue porte che esponi solo se è necessario! PRIMA BARRIERA FIREWALL (è quello che setti prima che il traffico arrivi al tuo server, e.g. da pannello Hetzner) e SECONDA BARRIERA FIREWALL all'interno del server, e.g. installando 'ufw' (better than iptables che è piu potente ma raw a deep livello linux server)
 7.-update quando vuoi (x aggiornamenti) sul server con e.g.'docker compose pull' 'docker compose up -d' 
 PC (sviluppo)
    ↓ git push
@@ -101,7 +102,7 @@ modifichi il code -> push su github o gitlab -> ssh e vai nel server nel root pr
 -oggi si fa di solito 
 Internet
    ↓
-80 / 443 / 22  //🔥porte allowed da Firewall cloud del provider (e.g.hetzner), 80 x HTTP  443 x HTTPS  22 x SSH remote connection, numeri definiti dall'IANA quindi che si aspettano tutti. questa è la 🔥PRIMA BARRIERA del firewall, STA ANCORA PRIMA DEL TUO SERVER (se blocchi una porta il server non sa nemmeno che esiste). Sul server setti anche la SECONDA BARRIERA cioe traffico gia arrivato al server, installi ufw  (better than iptables che è piu potente ma raw a deep livello linux server)
+80 / 443 / 22  //🔥porte allowed da Firewall cloud del provider (e.g.hetzner), 80 x HTTP  443 x HTTPS  22 x SSH remote connection, numeri definiti dall'IANA quindi che si aspettano tutti. questa è la 🔥PRIMA BARRIERA del firewall, STA ANCORA PRIMA DEL TUO SERVER (se blocchi una porta il server non sa nemmeno che esiste). Sul server setti anche la SECONDA BARRIERA cioe traffico gia arrivato al server installando 'ufw' (better than iptables che è piu potente ma raw a deep livello linux server)
    ↓
 🔥Nginx
    ↓
