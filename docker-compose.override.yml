@@ -11,6 +11,7 @@ version: "3.8"
  
 services:
  
+
   fastapi:
     #hot reload: uvicorn rileva modifiche ai .py e si riavvia automaticamente
     #in produzione NON vuoi questo, rallenta e consuma più CPU
@@ -33,11 +34,14 @@ services:
       - ./app:/app/app          #codice Python
       - ./config:/app/config    #yaml config
       - ./main.py:/app/main.py  #entry point
+      - ${DATA_ROOT}/uploads:/app/uploads
     #in dev apriamo anche porta debug se usi debugger remoto (es. VS Code attach)
     ports:
       - "8000:8000"
       - "5678:5678"   # debugpy — VS Code remote debugger (opzionale)
  
+
+
   celery-worker-high:
     #in dev: meno concurrency, log più verbosi
     command: >
@@ -53,7 +57,10 @@ services:
     volumes:
       - ./app:/app/app
       - ./config:/app/config
+      - ${DATA_ROOT}/uploads:/app/uploads
  
+
+
   celery-worker-default:
     command: >
       celery -A app.workers.celery_app.celery_app worker
@@ -68,6 +75,9 @@ services:
     volumes:
       - ./app:/app/app
       - ./config:/app/config
+      - ${DATA_ROOT}/uploads:/app/uploads
+
+
  
   celery-beat:
     environment:
@@ -76,6 +86,8 @@ services:
       - ./app:/app/app
       - ./config:/app/config
  
+
+
   qdrant:
     #in dev: esponi anche la porta gRPC per tool esterni (es. Qdrant Web UI)
     #e abbassa log level per non sporcare il terminale
@@ -85,6 +97,8 @@ services:
       - "6333:6333"
       - "6334:6334"
  
+
+
   redis:
     #in dev: niente password per semplicità
     #sovrascrive il command del file base che usa --requirepass
@@ -100,6 +114,8 @@ services:
     environment:
       REDIS_PASSWORD: ""
  
+
+
   chainlit:
     #Hot-reload in dev: -w fa sì che Chainlit rilevi le modifiche a app.py
     command: chainlit run app.py --host 0.0.0.0 --port 8080 -w
@@ -110,6 +126,8 @@ services:
       #Monta sorgenti live per hot-reload senza rebuild immagine
       - ./chainlit_app/app.py:/app/app.py
       - ./chainlit_app/.chainlit:/app/.chainlit
+
+
 
   sqlserver:
     environment:
