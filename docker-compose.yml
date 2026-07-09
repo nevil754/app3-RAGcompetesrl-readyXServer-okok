@@ -36,6 +36,9 @@ services:    #here servizi da avviare
       timeout: 10s   #max tempo risposta
       retries: 3     #dopo 3 tentativi falliti, container è unhealthy
       start_period: 20s   #attende 20sec prima di iniziare il check
+    networks:
+      - rag-network
+
 
   #CELERY x coda HIGH, deve essere veloce e prioritatrio, x chat realtime retireval RAG embedding veloce richieste utente
   celery-worker-high:    #worker Celery per coda "high" (task PRIORITARI)
@@ -76,6 +79,9 @@ services:    #here servizi da avviare
       timeout: 10s
       retries: 3
       start_period: 30s
+    networks:
+      - rag-network
+
 
   #CELERY x coda DEFAULT, più lenta e meno prioritaria ma stabile, x task di background pesanti e non urgenti, ingestion pdf batch embedding cleanup task pesanti
   celery-worker-default:    #Worker per task PESANTI/NON URGENTI
@@ -106,6 +112,10 @@ services:    #here servizi da avviare
         condition: service_healthy
       redis:
         condition: service_started
+    networks:
+      - rag-network
+
+
 
   #CELERY BEAT x scheduler task periodici
   celery-beat:     #Celery scheduler per task PERIODICI
@@ -124,6 +134,10 @@ services:    #here servizi da avviare
       REDIS_URL: "redis://redis:6379/0"
     depends_on:
       - redis
+    networks:
+      - rag-network
+
+
 
   #FLOWER x monitoring Celery (dev/staging), si collega a Redis e mostra cosa sta succedendo nel sistema Celery tramite un'interfaccia web
   flower:  #📊 dashboard monitoring Celery
@@ -142,6 +156,8 @@ services:    #here servizi da avviare
     env_file: .env
     depends_on:
       - redis
+    networks:
+      - rag-network
 
 
   #CHAINLIT frontend chat UI con streaming SSE, avaible on http://localhost:8080
@@ -166,6 +182,10 @@ services:    #here servizi da avviare
       timeout: 10s   #max tempo risposta
       retries: 3
       start_period: 15s   #attende 15sec prima di iniziare il check
+    networks:
+      - rag-network
+
+
 
   #QDRANT
   qdrant:
@@ -188,6 +208,10 @@ services:    #here servizi da avviare
       timeout: 10s
       retries: 5
       start_period: 20s
+    networks:
+      - rag-network
+
+
 
   #REDIS broker Celery + cache + sessioni
   redis:
@@ -217,6 +241,10 @@ services:    #here servizi da avviare
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - rag-network
+
+
 
   #SQL SERVER storage relazionale multi-tenant
   sqlserver:
@@ -258,17 +286,21 @@ services:    #here servizi da avviare
       timeout: 5s
       retries: 10
       start_period: 30s
+    networks:
+      - rag-network
 
-#VOLUMES
-volumes:  #docker named values, qui definiamo i volumi usati dai container per la persistena dati, così i dati restano ANCHE SE I CONTAINER VENGONO DISTRUTTI/RICREATI, fondamentale per produzione!!
-  qdrant_data:
-    driver: local
-  redis_data:
-    driver: local
-  sqlserver_data:
-    driver: local
-  uploads_data:
-    driver: local  #🔥 PDF e documenti caricati dagli utenti — condiviso tra fastapi e celery workers
+
+#questo non serve piu xk stai usando bind mount verso directory specifiche(decise da TE) del server!
+#prima e.g.qdrant_data:/qdrant/storage  salvava i dati persistenti (volumes) dentro  e.g./var/lib/docker/volumes/qdrant_data/_data in maniera gestita da docker
+# volumes:  #docker named values, qui definiamo i volumi usati dai container per la persistena dati, così i dati restano ANCHE SE I CONTAINER VENGONO DISTRUTTI/RICREATI, fondamentale per produzione!!
+#   qdrant_data:
+#     driver: local
+#   redis_data:
+#     driver: local
+#   sqlserver_data:
+#     driver: local
+#   uploads_data:
+#     driver: local  #🔥 PDF e documenti caricati dagli utenti — condiviso tra fastapi e celery workers
 #i volumes sono area persistente ESTERNA AL CONTAINER, su linux solitamente in /var/lib/docker/volumes/, su Windows Docker Desktop solitamente C:\Users\Username\AppData\Local\docker\volumes. LI GESTISCE DOCKER
 
 networks:
