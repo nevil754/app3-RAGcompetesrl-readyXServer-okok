@@ -94,7 +94,7 @@ Server
 docker compose up --build
    ↓
 Prj online
-modifichi il code -> push su github o gitlab -> ssh e vai nel server nel root prj -> scrichi le modifiche 'git pull' -> aggiorni i containers 'docker compose up -d --build' (docker ricostruisce le imgs che sono cambiate, riavvi i containers necessari, ovviamente mantiene i volumi xk sono esterni per sempre sul server).
+modifichi il code -> push su github o gitlab -> ssh e vai nel server nel root prj -> scarichi le modifiche 'git pull' -> aggiorni i containers 'docker compose up -d --build' (docker ricostruisce le imgs che sono cambiate, riavvi i containers necessari, ovviamente mantiene i volumi xk sono esterni per sempre sul server).
 //ovviamente con GitHub Actions puoi atuomatizzare auto che quando fai 'git push'->deploy automatico su server.
 
 🔥🔥🔥SET SERVER PRO ( x more continue on 'how-server-works.txt' )
