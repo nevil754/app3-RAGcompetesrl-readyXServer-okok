@@ -142,7 +142,9 @@ class AppSettings(BaseSettings):
 
     web_search_enabled: bool = False
     web_search_provider: str = "tavily"
+    #web_search_max_results: int = 5
     tavily_api_key: str = ""
+    metadata_config_file: str = "/app/config/metadata.yaml"
 
     celery_broker_url: str = "redis://redis:6379/0"      #uso database logico 0 (sempre all'interno sempre della stessa istanza Redis)
     celery_result_backend: str = "redis://redis:6379/0"  #uso database logico 0 (sempre all'interno sempre della stessa istanza Redis)
