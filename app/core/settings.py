@@ -41,19 +41,21 @@ class AppSettings(BaseSettings):
 
     app_name: str = "RAG Enterprise Compet-e Legal"  #here il value è quello di default, se in .env esiste allora vince quello di .env !!
     app_version: str = "0.1.0"
-    app_description: str = "RAG Enterprise per documenti legali"
     app_debug: bool = False
     app_environment: Literal["development", "staging", "production"] = "development"
+    app_description: str = "RAG Enterprise per documenti legali"
+
 
     llm_provider: str = "ollama"     #ollama | openai | google
     llm_model: str = "llama3.1"
-    llm_base_url: str = "http://ollama:11434"
+    llm_num_ctx: int = 2048    #finestra contesto massima, piu è alto più memoria conversazionale ma piu ram
     llm_api_key: str = ""
+    llm_base_url: str = "http://srvai2k22:11434/"
     llm_temperature: float = 0.0
     llm_max_tokens: int = 2048
     llm_timeout: int = 120
     llm_streaming: bool = True
-    llm_num_ctx: int = 2048    #finestra contesto massima, piu è alto più memoria conversazionale ma piu ram
+    
 
     embeddings_provider: str = "fastembed"
     embeddings_model: str = "BAAI/BGE-M3"
@@ -61,19 +63,22 @@ class AppSettings(BaseSettings):
     embeddings_batch_size: int = 64
     embeddings_cache_dir: str = "/app/.cache/embeddings"
 
-    qdrant_url: str = "http://qdrant:6333"
-    qdrant_api_key: str = ""
-    qdrant_collection_name: str = "collection-rag-v2"
-    qdrant_use_sparse: bool = True
-    qdrant_force_recreate: bool = False
-    qdrant_distance: str = "Cosine"
-    qdrant_on_disk_payload: bool = True
+
+    vectorstore_url: str = "http://qdrant:6333"
+    vectorstore_api_key: str = ""
+    vectorstore_collection_name: str = "collection-competeSrl-RAG"
+    vectorstore_use_sparse: bool = True
+    vectorstore_force_recreate: bool = False
+    vectorstore_distance: str = "Cosine"
+    vectorstore_on_disk_payload: bool = True
+
 
     sqlserver_host: str = "sqlserver"
     sqlserver_port: int = 1433
     sqlserver_db: str = "RAGChat"
     sqlserver_password: str = ""
     sqlserver_driver: str = "ODBC Driver 18 for SQL Server"
+
 
     @property   #trasforma function -> proprieta leggibile COME ATTRIBUTO (quindi ora fai settings.sqlserver_url come se fosse una var normale)
     def sqlserver_url(self) -> str:
