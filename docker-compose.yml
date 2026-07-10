@@ -28,7 +28,7 @@ services:    #here servizi da avviare
       qdrant:
         condition: service_started
     volumes:
-      - ./config:/app/config:ro    #monta cartella config del progetto dentro container, in sola lettura (ro), così config è centralizzata e modificabile senza rebuild container!!
+      - ./config:/app/config:ro    #monta cartella config del progetto dentro container, in sola lettura (ro), così config è centralizzata e modificabile senza rebuild container!! NON E x DATA PERISTENTI quindi questa non va salvata dentro il server in ${DATA_ROOT} ma invece sara semplicemente dentro un folder dentro il container.
       - ${DATA_ROOT}/uploads:/app/uploads #uploads_data:/app/uploads  #🔥 volume persistente per i PDF caricati dagli utenti
     healthcheck:  #check salute del container
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]   #chiama endpoint health, f → fail se status != 200
