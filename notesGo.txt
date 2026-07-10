@@ -95,7 +95,7 @@ docker compose up --build
    ↓
 Prj online
 modifichi il code -> push su github o gitlab -> ssh e vai nel server nel root prj -> scarichi le modifiche 'git pull' -> aggiorni i containers 'docker compose up -d --build' (docker ricostruisce le imgs che sono cambiate, riavvi i containers necessari, ovviamente mantiene i volumi xk sono esterni per sempre sul server).
-//ovviamente con GitHub Actions puoi atuomatizzare auto che quando fai 'git push'->deploy automatico su server.
+//ovviamente con GitHub Actions puoi automatizzare auto che quando fai 'git push'->deploy automatico su server.
 
 🔥🔥🔥SET SERVER PRO ( x more continue on 'how-server-works.txt' )
 -quando compri VPS(e.g.Hetzner 4$/month) ti da anche subito IP pubblico (e.g. 95.123.45.67), se nel docker-compose fai x redis e.g."6379:6379" fa pubblica la porta del container target sulla scheda di rete del server, allora ora sul web chiunque puo fare 95.123.45.67:6379 ed raggiungere direttamente il tuo redis! ovviamente se per caso non specifichi 'ports' x redis nel docker-compose, all'interno della rete docker cmnq redis è chiamabile (anche xk hanno naming dei containers x riconoscersi tra di loro), ma dall'esterno e.g.SERVER_IP:6379 non funziona. ovviamente anche se non hai Nginx cmnq e.g.95.123.45.67:6379 funziona e chiunque puo accedere al tuo redis.

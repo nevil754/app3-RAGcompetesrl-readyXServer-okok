@@ -100,7 +100,7 @@ Il sistema isola i dati di ogni cliente (**tenant**) su tre livelli indipendenti
   - schema **`shared`**: tabelle globali cross-tenant — `tenants`, `audit_log`, `usage_stats`, `api_keys`.
   - uno schema **`tenant_<slug>`** dedicato per ogni tenant (es. `tenant_acme_corp`), creato dinamicamente dalla stored procedure `shared.sp_provision_tenant` (T-SQL, `sp_executesql`), contenente: `users`, `collections`, `documents`, `ingestion_jobs`, `conversations`, `messages`, `message_feedback`, `conversation_summaries`, `user_facts`.
 - Per ogni tenant viene creato anche un **utente SQL Server dedicato** (`usr_tenant_<slug>`, WITHOUT LOGIN) con permessi limitati al proprio schema. A runtime, prima di ogni query viene eseguito `EXECUTE AS USER = 'usr_tenant_<slug>'` (impersonation) e poi `REVERT` — un secondo livello di isolamento indipendente dalla logica applicativa.
-- **Non esiste un vero ORM a runtime**: le classi SQLAlchemy in `app/db/models/shared.py` sono definite ma non usate; tutto l'accesso ai dati (shared e per-tenant) passa da SQL raw tramite `text()` nei repository (`app/db/repositories/*`).
+- **Non esiste un vero ORM a runtime**: le classi SQLAlchemy in `app/db/models/shared.py` sono definite ma non usate 👀; tutto l'accesso ai dati (shared e per-tenant) passa da SQL raw tramite `text()` nei repository (`app/db/repositories/*`).
 - Le query applicative quasi non filtrano mai esplicitamente per `tenant_id`: l'isolamento è garantito dallo schema/utente DB selezionato dinamicamente in base al tenant risolto dal token.
 
 ### 3.2 Qdrant — una collection per tenant
@@ -226,7 +226,7 @@ Se in futuro si vuole attivare il routing multi-agente, il grafo è pronto: va c
 
 ## 9. Memoria conversazionale
 
-- **Memoria a breve termine** (attiva, in uso): implementata direttamente in `chat_service.py` tramite `TenantRedis` — lista Redis (`RPUSH`/`LTRIM`) con gli ultimi `memory_short_term_turns` (default **10**) turni, TTL configurabile. Esiste anche una classe wrapper `app/rag/memory/short_term.py::ShortTermMemory` con la stessa logica, ma **non è usata** dal percorso attivo (duplicazione, non un bug bloccante).
+- **Memoria a breve termine** (attiva, in uso): implementata direttamente in `chat_service.py` tramite `TenantRedis` — lista Redis (`RPUSH`/`LTRIM`) con gli ultimi `memory_short_term_turns` (default **10**) turni, TTL configurabile. Esiste anche una classe wrapper `app/rag/memory/short_term.py::ShortTermMemory` con la stessa logica, ma **non è usata** 👀 dal percorso attivo (duplicazione, non un bug bloccante).
 - **Memoria a lungo termine** (`app/rag/memory/long_term.py::LongTermMemory`): riassunti di conversazione + estrazione di "fatti utente" persistenti (preferenze, competenze, istruzioni) via LLM, salvati su SQL Server (`conversation_summaries`, `user_facts`). Disabilitata di default (`memory_long_term_enabled=False`) e **non istanziata da nessuna parte del codice attivo** — anche abilitandola, il `context_builder` non ha un placeholder nel prompt per iniettare questi fatti, quindi il collegamento end-to-end non è completo.
 - **`context_builder.py`**: assembla il testo del contesto RAG (chunk + storico) rispettando un limite di caratteri (12.000 default, troncamento per chunk intero) e produce l'elenco `sources` formattato per la risposta API.
 
