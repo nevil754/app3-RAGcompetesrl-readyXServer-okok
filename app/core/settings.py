@@ -141,7 +141,7 @@ class AppSettings(BaseSettings):
     web_search_provider: str = "tavily"
     tavily_api_key: str = ""
 
-    celery_broker_url: str = "redis://redis:6379/0"   #uso database logico 0 (sempre all'interno sempre della stessa istanza Redis)
+    celery_broker_url: str = "redis://redis:6379/0"      #uso database logico 0 (sempre all'interno sempre della stessa istanza Redis)
     celery_result_backend: str = "redis://redis:6379/0"  #uso database logico 0 (sempre all'interno sempre della stessa istanza Redis)
 
     openai_api_key: str = ""
@@ -150,7 +150,7 @@ class AppSettings(BaseSettings):
 
     #quando fai settings = AppSettings(), 🔥pydantic fa legge .env -> legge env var -> crea obj settings -> valida tutti i campi -> ESEGUE I VALIDATORS -> solo ora run the app
     @field_validator("jwt_secret_key")   #custom validator, check il field jwt_secret_key
-    @classmethod  #dice a python che questa funzione appartiene alla classe e NON all'istanza. per validator pydantic è lo standart
+    @classmethod    #dice a python che questa funzione appartiene alla classe e NON all'istanza. per validator pydantic è lo standart
     def validate_jwt_secret(cls, v: str) -> str:   #cls è la classe corrente, v è il valore del campo jwt_secret_key
         if v == "change-me-in-production-min-32-chars":   #chiave fake di development 
             return v     #ok in dev
