@@ -63,14 +63,14 @@ class AppSettings(BaseSettings):
     embeddings_batch_size: int = 64
     embeddings_cache_dir: str = "/app/.cache/embeddings"
 
-
-    vectorstore_url: str = "http://qdrant:6333"
-    vectorstore_api_key: str = ""
-    vectorstore_collection_name: str = "collection-competeSrl-RAG"
-    vectorstore_use_sparse: bool = True
-    vectorstore_force_recreate: bool = False
-    vectorstore_distance: str = "Cosine"
-    vectorstore_on_disk_payload: bool = True
+    #ok 'qdrant...' questa è solo una var usata here, dopo fai conversione e usi esistente vectorstore...
+    qdrant_url: str = "http://qdrant:6333"
+    qdrant_api_key: str = ""
+    qdrant_collection_name: str = "collection-competeSrl-RAG"
+    qdrant_use_sparse: bool = True
+    qdrant_force_recreate: bool = False
+    qdrant_distance: str = "Cosine"
+    qdrant_on_disk_payload: bool = True
 
 
     sqlserver_host: str = "sqlserver"
