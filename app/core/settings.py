@@ -78,8 +78,6 @@ class AppSettings(BaseSettings):
     sqlserver_db: str = "RAGChat"
     sqlserver_password: str = ""
     sqlserver_driver: str = "ODBC Driver 18 for SQL Server"
-
-
     @property   #trasforma function -> proprieta leggibile COME ATTRIBUTO (quindi ora fai settings.sqlserver_url come se fosse una var normale)
     def sqlserver_url(self) -> str:
         """connection string che verra usata da SQLAlchemy per SQL Server via pyodbc"""
@@ -132,7 +130,7 @@ class AppSettings(BaseSettings):
 
     langsmith_enabled: bool = False
     langsmith_api_key: str = ""
-    langsmith_project: str = "rag-enterprise-legal"
+    langsmith_project: str = "competeSrl-RAGenterprise"
     langsmith_endpoint: str = "https://eu.api.smith.langchain.com"
     langchain_tracing_v2: bool = True
     opentelemetry_enabled: bool = False

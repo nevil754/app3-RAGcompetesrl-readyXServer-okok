@@ -57,7 +57,7 @@ metadata:
 vectorstore:
   url: "http://qdrant:6333"   #porta
   api_key: "${QDRANT_API_KEY}"    #chiave auth, anche ok vuoto in dev, ma ovviamente 🔥obbligatorio in prod
-  collection_name: "collection-competeSrl-RAGv2"
+  collection_name: "collection-competeSrl-RAG"
   use_sparse: true
   force_recreate: false    #se true allora cancella e ricrea la collection ad ogni avvio, ok sviluppo per evitare dati obsoleti ma in produzione deve essere false
   distance: "Cosine"        #Cosine | Dot | Euclid
@@ -91,7 +91,7 @@ logging:
 
 observability:
   langsmith_enabled: false       #true in staging/prod, cosi vedi info nella dashboard LangSmith
-  langsmith_project: "compet-eSrl-RAGenterprise-legal"
+  langsmith_project: "competeSrl-RAGenterprise"
   opentelemetry_enabled: false   #telemetry distribuita, usa plugin opentelemetry per tracciare richieste e performance
 
 rate_limit:    #🔥SEMPRE DA FARE protezione abuso e ti protegge anche dai costi alti computazionali eseguiti dai clienti
