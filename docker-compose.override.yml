@@ -1,4 +1,4 @@
-#questo file docker-compose.override.yml VIENE SEMPRE CARICATO quando fai 'docker-compose up', e QUESTI SETTINGS OVERRIDE QUELLI DI BASE se matchano
+#questo file docker-compose.override.yml VIENE SEMPRE CARICATO quando fai 'docker-compose up', e QUESTI SETTINGS OVERRIDE QUELLI DI BASE se matchano. Ovviamente cio deve avvenire solo in env Development, mai in env staging or production.
 
 version: "3.8"
 # =============================================================

@@ -40,7 +40,8 @@ RUN pip install --no-cache-dir --upgrade pip \
 #aggiorna pip, non salva cache wheel(riduce dimensione immagine), 🔥NON installare dipendenze automatiche, PERCHE IO INTANTO HO TUTTO(anche le dependencies transitive!) su requirements.txt e requirements-dev.txt FILES GENERATI
 
 RUN python -c "from fastembed import TextEmbedding; TextEmbedding('BAAI/BGE-M3')" \
-    || echo "fastembed model preload skipped (no internet in build)"
+    || echo "fastembed model preload skipped (no internet in build)"  
+#TODO pero io uso anche model 'prithivida/Splade_PP_en_v1' e 'BAAI/bge-reranker-base'
 #🔥DOWNLOAD IL MODEL LLM EMBEDDING DURANTE LA BUILD!! cosi container veloce no download runtime. se build env non ha internet, non fa fallire build.
 
 

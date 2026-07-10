@@ -84,7 +84,7 @@ services:    #here servizi da avviare
 
 
   #CELERY x coda DEFAULT, più lenta e meno prioritaria ma stabile, x task di background pesanti e non urgenti, ingestion pdf batch embedding cleanup task pesanti
-  celery-worker-default:    #Worker per task PESANTI/NON URGENTI
+  celery-worker-default:    #worker per task PESANTI/NON URGENTI
     build:
       context: .
       dockerfile: docker/celery.Dockerfile

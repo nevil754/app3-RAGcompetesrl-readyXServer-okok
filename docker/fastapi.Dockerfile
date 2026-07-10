@@ -68,5 +68,5 @@ EXPOSE 8000
 # --workers 1 in dev — in prod usa gunicorn o aumenta i worker
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", \
      "--workers", "1", "--loop", "uvloop", "--http", "httptools"]
-#avvia FastAPI, --host 0.0.0.0 espone server all'esterno container, --port 8000 è porta standard FastAPI, --workers 1 per sviluppo (⚠️in prod aumentare o usare gunicorn), --loop uvloop e --http httptools migliorano performance FastAPI, ottimo per produzione!!
+#avvia FastAPI, --host 0.0.0.0 espone server all'esterno container, --port 8000 è porta standard FastAPI, --workers 1 per sviluppo (⚠️in prod aumentare o usare gunicorn!), --loop uvloop e --http httptools migliorano performance FastAPI, ottimo per produzione!!
 
