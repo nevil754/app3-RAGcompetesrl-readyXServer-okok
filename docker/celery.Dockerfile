@@ -71,7 +71,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 #ENV PYTHONDONTWRITEBYTECODE=1 \    disabilita .pyc, riduce scritture disco
 #PYTHONUNBUFFERED=1 \    output log immediato, molto importante per Docker logs
 #PYTHONUNBUFFERED=1 \     traceback completi anche per crash low-level, ottimo debugging
-#C_FORCE_ROOT=1     permette Celery come root. ⚠️⚠️ IN PRODUZIONE NON USARE ROOT, CREA UTENTE DEDICATO E USA QUELLO!!
+#C_FORCE_ROOT=1     permette Celery come root. ⚠️⚠️TODO IN PRODUZIONE NON USARE ROOT, CREA UTENTE DEDICATO E USA QUELLO!!
 
 WORKDIR /app
 #directory app
