@@ -39,9 +39,18 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir --no-deps -r requirements.txt
 #aggiorna pip, non salva cache wheel(riduce dimensione immagine), 🔥NON installare dipendenze automatiche, PERCHE IO INTANTO HO TUTTO(anche le dependencies transitive!) su requirements.txt e requirements-dev.txt FILES GENERATI
 
-RUN python -c "from fastembed import TextEmbedding; TextEmbedding('BAAI/BGE-M3')" \
-    || echo "fastembed model preload skipped (no internet in build)"  
-#TODO pero io uso anche model 'prithivida/Splade_PP_en_v1' e 'BAAI/bge-reranker-base'
+# RUN python -c "from fastembed import TextEmbedding; TextEmbedding('BAAI/BGE-M3')" \
+#     || echo "fastembed model preload skipped (no internet in build)"  
+RUN python - <<'PY' || echo "Model preload skipped"
+from fastembed import TextEmbedding
+from fastembed import SparseTextEmbedding
+from fastembed import TextCrossEncoder
+TextEmbedding("BAAI/bge-m3")
+SparseTextEmbedding("prithivida/Splade_PP_en_v1")
+TextCrossEncoder("BAAI/bge-reranker-base")
+print("All AI models downloaded.")
+PY
+#.cmnq nel code (embeddings.py) x "BAAI/bge-reranker-base" import CrossEncoder non TextCrossEncoder
 #🔥DOWNLOAD IL MODEL LLM EMBEDDING DURANTE LA BUILD!! cosi container veloce no download runtime. se build env non ha internet, non fa fallire build.
 
 
@@ -67,11 +76,10 @@ COPY --from=builder /root/.cache /root/.cache
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PYTHONUNBUFFERED=1 \
+    #PYTHONFAULTHANDLER=1 \
     C_FORCE_ROOT=1
 #ENV PYTHONDONTWRITEBYTECODE=1 \    disabilita .pyc, riduce scritture disco
 #PYTHONUNBUFFERED=1 \    output log immediato, molto importante per Docker logs
-#PYTHONUNBUFFERED=1 \     traceback completi anche per crash low-level, ottimo debugging
 #C_FORCE_ROOT=1     permette Celery come root. ⚠️⚠️TODO IN PRODUZIONE NON USARE ROOT, CREA UTENTE DEDICATO E USA QUELLO!!
 
 WORKDIR /app
