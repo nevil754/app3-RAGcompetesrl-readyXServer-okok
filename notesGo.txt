@@ -229,7 +229,7 @@ flow:
 //quindi Celery entra in gioco se la query triggera un'azione lenta e.g.upload 200docs / web scapring aggressivo (ricordati che con Tavily hai 1k req/mese free, quindi va bene solo x development!! )
 
 
-⚡️⚡️-Memoria Temporale Graph(anche di anni) per agentsn (quella che il pro sto pensando di sviluppare io):
+⚡️⚡️-Memoria Temporale Graph(anche di anni) per agents (quella che il pro sto pensando di sviluppare io):
 🔥--ZEP(https://github.com/getzep/zep?utm_source=chatgpt.com): self-hosted, memoria persistente temporal resoning knowledge graph dinamico context retrieval ultraveloce, e.g.2024 Nelvison preferisce Nvidia 2026 Nelvison preferisce SpaceX quindi il system sa cosa era vero quando è cambiato ed cosa oggi è vero! GOOD GOOD.
 --Mem0: memory abstraction layer minimal molto piu semplice di Zep, ok production ready.
 --MemGPT(old) / Letta(new version): non solo save memory ma anche costruisce agents stateful permanenti, lavora quasi come ram o hard disk di un pc, è molto piu agentico OVERKILL per te now. 
@@ -312,7 +312,7 @@ logger.info("Logout", user_id=tenant.user_id, sessions_deleted=deleted)  #log w 
 #    "<cyan>{name}</cyan>:<cyan>{line}</cyan> | "
 #    "<level>{message}</level>"
 #) quindi non hai {extra}, quindi in console non renderizzerai anche e.g. user_id e sessions_deleted, ma questi SERVONO CMNQ NEL RECORD LOGURU xk e.g. Grafana/OpenTelemetry/ELK li usano!!!
-- @lru_cache(maxsize=1)  trasforma la functione in singleton, quindi la seconda volta se l'istanza è cia in cache allora ritornalo al chiamante senza doverlo ricaricare.
+- @lru_cache(maxsize=1)  trasforma la functione in singleton, quindi la seconda volta se l'istanza è gia in cache allora ritornalo al chiamante senza doverlo ricaricare.
 -good technique x costruction command sql!! 
 offset = (page - 1) * page_size   #offset è il jump da dove deve iniziare, e.g. se setti che pagesize è 20elems allora per leggere pagina 3 devi saltare 40elems iniziali!
     where = "WHERE 1=1"
@@ -328,7 +328,7 @@ offset = (page - 1) * page_size   #offset è il jump da dove deve iniziare, e.g.
     )
 -embeddings
 model = get_embedding_model()
-vectors = list(model.query_embed([text]))  #🔥🔥here accada l'embedding docs!!
+vectors = list(model.query_embed([text]))  #🔥🔥here accade l'embedding docs!!
 #⭐️⭐️i modelli retrieval di solito hanno 2 modalita: document embedding e query embedding, quindi con BGE utilizziamo embed(myDocument) e query_embed(myQuery)
 -Cross-Encoder vs Bi-Encoder: 
 🔥--Cross-Encoder: prende 2 frasi insieme dallo stesso input, le frasi intereagiscono direttamente dentro il modello. cattura relazioni piu sottili tra le frasi, ma è lento(deve ricalcolare ogni coppia) e non scala a milioni di confronti. PERFETTO X RE-RANKING TECHNIQUE quando hai gia poche coppie da valutare e vuoi massima precision!!
@@ -373,8 +373,8 @@ quindi in realta il famoso che tutti amano 'alverare di agenti' in realta è 1 m
                      QA
                       │
                    Output
-quindi oggi l' 80% dei FAMOSI "multi-agent systems" sono in realtà workflow orchestrati🔥.
-- https://github.com/garrytan/gstack by Gary Tan (YC Combinator CEO):  utile SOLO se il prj/repo è migliaia di files (altrimenti è piu semplice e anche piu potente claude come lo utilizzi normalmente), al posto di usare claude normal che ci puo mettere anche 20+ minutes per analizzare il code base, usi questo.  con questi runni multipli agenti anche parzialmente in parallelo (quindi risparmi tempo), ogni agente vede solo i suoi files (invece di all repository), al livello di utilizzo di tokens questo system ne puo utilizzare anche di piu (x2/x3) di claude nromal (perche gli agents si scambiano anche il contexts), questo system lo utilizzi da CLI(interfaccia a linea di comando), ogni agente lavora nel suo worktree git (very good, very da pro). task enorme (repo enorme) -> suddividi -> molti agenti -> ogni agente lavora su un pezzo,  molto utile SOLO se code base enorme il claude normale ci metterebbe tantissimo TEMPO perche fa un medium-task a cascata uno dopo l'altro.
+quindi oggi l'80% dei FAMOSI "multi-agent systems" sono in realtà workflow orchestrati🔥.
+- https://github.com/garrytan/gstack by Gary Tan (YC Combinator CEO):  utile SOLO se il prj/repo è migliaia di files (altrimenti è piu semplice e anche piu potente claude come lo utilizzi normalmente), al posto di usare claude normal che ci puo mettere anche 20+ minutes per analizzare il code base, usi questo.  con questi runni multipli agenti anche parzialmente in parallelo (quindi risparmi tempo), ogni agente vede solo i suoi files (invece di all repository), al livello di utilizzo di tokens questo system ne puo utilizzare anche di piu (x2/x3) di claude normal (perche gli agents si scambiano anche il contexts), questo system lo utilizzi da CLI(interfaccia a linea di comando), ogni agente lavora nel suo worktree git (very good, very da pro). task enorme (repo enorme) -> suddividi -> molti agenti -> ogni agente lavora su un pezzo,  molto utile SOLO se code base enorme il claude normale ci metterebbe tantissimo TEMPO perche fa un medium-task a cascata uno dopo l'altro.
 -collaborazione pratica a prj azienda: 
 //cloni repo aziendale
 git clone git@github.com:azienda/progetto.git
@@ -453,5 +453,5 @@ OGGI GLI AGENTS NON HANNO MEMORIA con questo voglio che ce la abbiano ora.
 
 #######
 - 
--fare un tavility x scraping web (come https://www.tavily.com/) apposta per agents! perche devono poter andare sul web! e ci sono poche opzioni attualmente.
+-tavility x scraping web (come https://www.tavily.com/) apposta per agents! perche devono poter andare sul web! e ci sono poche opzioni attualmente.
 
