@@ -32,7 +32,7 @@ llm:
   #api_key: "${GOOGLE_API_KEY}"  #ora gestito da 'settings.py'
   num_ctx: 2048     #🔥finestra contesto massima, piu è alto più memoria conversazionale ma piu ram
   api_key: "${OLLAMA_API_KEY}"
-  base_url: "http://ollama:11434"
+  base_url: "http://srvai2k22:11434/"  #"http://ollama:11434"
   temperature: 0.0    #'creatività'del modello, 0=deterministico 1=massima creatività
   max_tokens: 2048    #massima lunghezza output
   timeout: 120    #timeout in secondi per chiamate al modello, per evitare attese infinite
