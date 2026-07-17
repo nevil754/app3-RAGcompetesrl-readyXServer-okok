@@ -247,7 +247,7 @@ services:    #here servizi da avviare
 
 
   #SQL SERVER storage relazionale multi-tenant
-  sqlserver:
+  sqlserver:  #here le imgs x docker le trovi sul Microsoft Container Registry
     image: mcr.microsoft.com/mssql/server:2022-latest  #immagine ufficiale SQL Server 2022, sempre aggiornata, supporta configurazione tramite env var e script di inizializzazione, ottima per produzione (⚠️ricorda di configurare password forte e persistena dati!!)
     #container_name: sqlserver
     restart: unless-stopped

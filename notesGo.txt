@@ -27,6 +27,18 @@ pip install -r requirements-dev.txt
 
 //attualmente nel mio env creato  avevo markitdown==0.0.1a2 ora invece ho tolto '--pre' dal comando per generare il file .txt e l'ho cambiato in -> markitdown>=0.0.1, e ho rigenerato il file requirements.txt. CMQN SAPERE CHE ATTUALMENTE NEL MIO ENV HO ANCORA LA VERSIONE markitdown==0.0.1a2 (e le sue dipendenze transitive). mentre il file .txt è correttamente aggiornato.
 
+PERO ATTENTION, TU ATTUALEMENTE FAI QUESTO SU PC WINDOWS, MA POI DEPLOYO SU SERVER LINUX ⚠️⚠️
+quindi il lock va compilato sulla stessa piattaforma + stessa versione Python su cui gira in produzione (nel mio caso Linux python:3.11-slim-bookworm) !!
+quindi
+# in root prj, sul server Linux (o in qualsiasi macchina con Docker)
+docker run --rm -v "$(pwd):/w" -w /w python:3.11-slim-bookworm bash -c "
+  pip install pip-tools &&
+  pip-compile requirements.in     --output-file requirements.txt     --resolver=backtracking --no-header --annotate &&
+  pip-compile requirements-dev.in --output-file requirements-dev.txt --resolver=backtracking --no-header --annotate
+"
+Questo genera i .txt (replace quelli gia esistenti generati w windows) dentro un ambiente bookworm identico a quello di produzione!
+ora devi passare questi files: assicurati che su forgejo i files attuali windows si chiamino e.g.requirements_windows.txt, e poi sul server pass i files linux generati a Frogejo (sul server fai fai push).
+
 ########################DOCKER & RUN CONTAINERS ALL APPLICATIONS
 
 docker-compose -f docker-compose.yml up -d    //questo lo lanci in production (quindi il docker-compose.override.yml non viene caricato)
