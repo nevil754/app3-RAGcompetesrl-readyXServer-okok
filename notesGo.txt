@@ -361,7 +361,7 @@ vectors = list(model.query_embed([text]))  #🔥🔥here accade l'embedding docs
 -ReRanking
 from sentence_transformers import CrossEncoder  #🔥CrossEncoder è il wrapper
 reranker = CrossEncoder(settings.reranker_model, max_length=512,  #max token per chunk)
-#🔥reranking CrossEncoder fa (query, documento) -> score. è piu lento dell'embeddings.ù
+#🔥reranking CrossEncoder fa (query, documento) -> score. è piu lento dell'embeddings.
 
 
 
@@ -374,7 +374,7 @@ reranker = CrossEncoder(settings.reranker_model, max_length=512,  #max token per
 
 ⭐️⭐️⭐️-QUESTO E IL TOP FLOW:
     #1. Hybrid Search (dense + sparse (puoi usare type BM25 (è basic) oppure SPLADE(better, che usa reti neurali), sono i 2 types x this piu utilizzati ))(eseguito uno dopo l'altro) → Top 20 risultati. ottieni 2 ranking separati.
-    #2. RRF (Reciprocal Rank Fusion) → in input 2 ranking separati (1 di dense e 1 di sparse) i risulati forti in entrambi i ranking salgono (mentre quelli deboli scendono) come output 1 ranking unico.
+    #2. RRF (Reciprocal Rank Fusion) → in input 2 ranking separati (1 di dense e 1 di sparse) i risultati forti in entrambi i ranking salgono (mentre quelli deboli scendono) come output 1 ranking unico.
     #2. MMR (Maximal Marginal Relevance) → Top 10 diversificati. penalizza i chunk troppo simili tra loro, in questo modo hai solo risultati diversi (no clones) i piu importanti.
     #3. ReRanker (Cross-Encoder technique w model BAAI/bge-reranker-base) → Top 5 precisi. prende in input i risultati e con model BAAI/bge-reranker-base assegna un ranking a ciascuno, quindi poi return solo i X bests.
     //🔥model x dense BM25 il model 'prithivida/Splade_PP_en_v1' è uno type SPLADE dei piu usati today excellent qualita-speed.
