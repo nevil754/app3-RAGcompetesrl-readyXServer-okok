@@ -51,7 +51,7 @@ docker compose up -d
 ########################DOCKER & RUN CONTAINERS ALL APPLICATIONS
 
 docker-compose -f docker-compose.yml up -d    //questo lo lanci in production (quindi il docker-compose.override.yml non viene caricato)
-docker-compose up    //questo ok lo lanci in develop (no -d cosi vedi i logs), e visto che non specifici il file allora anche il file docker-compose.override.yml viene caricato!!
+docker-compose up -d   //questo ok lo lanci in develop (no -d cosi vedi i logs), e visto che non specifici il file allora anche il file docker-compose.override.yml viene caricato!!
 
 //in sviluppo il comand per far parti non usa -d (detached), cosi rimane legato e vedi tutti i logs su terminale
 con 'docker-compose -f docker-compose.yml up -d', docker rispetta i depends_on e avvia i container in questo ordine:
