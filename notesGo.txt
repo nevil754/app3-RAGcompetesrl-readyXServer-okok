@@ -39,6 +39,15 @@ docker run --rm -v "$(pwd):/w" -w /w python:3.11-slim-bookworm bash -c "
 Questo genera i .txt (replace quelli gia esistenti generati w windows) dentro un ambiente bookworm identico a quello di produzione!
 ora devi passare questi files: assicurati che su forgejo i files attuali windows si chiamino e.g.requirements_windows.txt, e poi sul server pass i files linux generati a Frogejo (sul server fai fai push).
 
+QUANDO CAMBIA QUALCOSA IN files .in
+rigenera i files i 2 .txt
+grep -i 'email-validator' requirements.txt          # deve esserci
+grep -iE 'nvidia|cuda-|triton' requirements.txt     # deve essere VUOTO
+head -3 requirements.txt                            # --extra-index-url cpu ancora in cima
+
+docker compose build fastapi celery-worker-high celery-worker-default celery-beat
+docker compose up -d
+
 ########################DOCKER & RUN CONTAINERS ALL APPLICATIONS
 
 docker-compose -f docker-compose.yml up -d    //questo lo lanci in production (quindi il docker-compose.override.yml non viene caricato)
