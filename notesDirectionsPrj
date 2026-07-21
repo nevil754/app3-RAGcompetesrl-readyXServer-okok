@@ -1,4 +1,5 @@
 ######🔥INFO RIGUARDO APP RAG competesrl - talk w Mauro - 5-6-2026
+!🔥🔥-FARE UN MEGA ADMIN, che quando entri poi puoi click button 'Add Schema' e quello crea lo schema! xk il cliente vuole che fa login, e poi all'interno puo creare con click 1 nuovo tenant (e chaiamarlo e.g. 'Ufficio H').
 
 //i files .md che cito qui, sono i file di Settaggio (cioe metadati) per come deve rispondere llm. questi files devono poter essere facilmente editati  e caricati di nuovi ed eliminati.
 -crei sottocontainer con db sqllite, questo db ha colonne: id, nomeDocMarkdown, infoAboutDoc, IDDocXRetriever. e anche cartella (sempre dentro sottoconatiner) chiamato '/filesMarkdown' dove verranno uplodati here (il loro nome sara come l'IDDocXRetriever ) i files .md  (saranno 4-5 per Tenant). 
