@@ -1,3 +1,7 @@
 
 Blocks:
 
+- middleware che cattura il mex in entrata prende il token 'Bearer ...' e verifica che sia auth.
+- ingestion flow
+- return to frontend the streaming sse
+- 
