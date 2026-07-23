@@ -241,7 +241,7 @@ quindi al posto utilizzi 🔥🔥RedBeat (plugin celery-redbeat) che salva i tas
 //quindi ora redis diventa anche un db per schedulers! 
 -raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))  #self.retry() lancia internamente un'eccezione speciale (Retry) che dice al worker che il task non è fallito definitivamente ma rimettilo in coda e riprovalo più tardi.
 
-flow:
+flow:⭐️⭐️⭐️
 1. fastapi riceve la query, il middleware estrae tenant_id dal JWT e lo inietta nel request.state
 2. chat_service.py esegue GET tenant:acme:cache:query:{hash} quindi se ha gia quella query in cache allora return subito, se no invece...
 3. se query non è gia in cache allora LRANGE tenant:acme:session:{conv_id} cioe carica da Redis->su cache, sono gli ultimi N turni, salvati su Redis per cosi non dover interrogare il db
