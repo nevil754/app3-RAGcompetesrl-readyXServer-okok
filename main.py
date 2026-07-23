@@ -40,8 +40,8 @@ def create_app() -> FastAPI:  #🔥app factory
         title=settings.app_name,
         version=settings.app_version,
         description=settings.app_description,
-        docs_url="/docs" if settings.app_debug else None,   #abilita docs_url="/docs" solo se app_debug=True. 
-        redoc_url="/redoc" if settings.app_debug else None,   #abilita redoc_url="/redoc" solo se app_debug=True
+        docs_url="/docs" if settings.app_debug else None,   #abilita docs_url="/docs" solo se app_debug=True, quindi vedi Swagger UI ui su http://192.168.113.52:8000/docs#/  cioe see all endpoints
+        redoc_url="/redoc" if settings.app_debug else None,   #abilita redoc_url="/redoc" solo se app_debug=True, stessa cosa di /docs ma con renderer diverso (non interattivo)
         openapi_url="/openapi.json" if settings.app_debug else None,   #abilita openapi_url="/openapi.json" solo se app_debug=True
         #in questo modo in Production il settings.app_debug è False quindi meno logs, e anche questi 3 here si settano a None, ok.
         lifespan=lifespan,   #collega startup/shutdown manager
@@ -64,7 +64,7 @@ def create_app() -> FastAPI:  #🔥app factory
     app.add_middleware(TenantMiddleware)
     from app.api.routes.health import router as health_router   #import il tuo custom file
     from app.api.routes.auth import router as auth_router   #import il tuo custom file
-    app.include_router(health_router)  #monta  '/health' endpoint
+    app.include_router(health_router)  #monta  '/health' endpoint!
     app.include_router(auth_router, prefix="/api/v1")  #monta  '/api/v1/auth' prefix endpoint
 
     from app.api.routes.chat import router as chat_router
